@@ -1,24 +1,20 @@
-<%@ page session="true" %>
-<%@ page import="jakarta.servlet.http.HttpSession" %>
-<%@ page import="dto.User" %>
-<%
-    HttpSession ses = request.getSession(false);
-    if (session == null || session.getAttribute("user") == null) {
-        response.sendRedirect("login.jsp");
-    } else {
-        User usr = (User) session.getAttribute("user");
-%>
-
 <!DOCTYPE html>
 <html>
 <head>
     <title>Dashboard</title>
 </head>
 <body>
-<h2>Welcome, <%= usr.getName() %>!</h2>
-<p>This is your dashboard.</p>
-<a href="logout.jsp">Logout</a>
+<h1>Dashboard de ${sessionScope.user.name}</h1>
+
+<c:if test="${not empty errorMessage}">
+    <p class="error" style="color: red">${errorMessage}</p>
+</c:if>
+
+
+<form action="CreateThreadServlet" method="post">
+    <label for="title">Title:</label>
+    <input type="text" id="title" name="title" required>
+    <button type="submit">Create Thread</button>
+</form>
 </body>
 </html>
-
-<% } %>

@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS thread;
 DROP TABLE IF EXISTS usr;
 
 CREATE TABLE usr (
-                             id INT PRIMARY KEY,
+                             id SERIAL PRIMARY KEY,
                              name VARCHAR(50) NOT NULL,
                              pwd VARCHAR(255) NOT NULL,
                              email VARCHAR(100) NOT NULL UNIQUE
@@ -12,7 +12,7 @@ CREATE TABLE usr (
 
 -- Table Fil de Discussion
 CREATE TABLE thread (
-                               id INT PRIMARY KEY,
+                               id SERIAL PRIMARY KEY,
                                title VARCHAR(100) NOT NULL,
                                admin_id INT NOT NULL,
                                FOREIGN KEY (admin_id) REFERENCES usr(id) ON DELETE CASCADE
@@ -20,7 +20,7 @@ CREATE TABLE thread (
 
 -- Table Message
 CREATE TABLE post (
-                         id INT PRIMARY KEY,
+                         id SERIAL PRIMARY KEY,
                          contenu TEXT NOT NULL,
                          usr_id INT NOT NULL,
                          thread_id INT NOT NULL,

@@ -1,6 +1,8 @@
 package dto;
 
 public class User {
+    private static int serialID = 1;
+
     private int id;
     private String name;
     private String email;

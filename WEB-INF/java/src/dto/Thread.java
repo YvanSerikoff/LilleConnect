@@ -1,6 +1,8 @@
 package dto;
 
 public class Thread {
+    private static int serialID = 3;
+
     private int id;
     private String title;
     private int adminId;

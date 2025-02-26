@@ -6,7 +6,7 @@ import java.util.*;
 import dto.Thread;
 
 public class ThreadDAO {
-    private DS ds;
+    private final DS ds;
 
     public ThreadDAO() throws IOException {
         this.ds = new DS();
@@ -32,7 +32,7 @@ public class ThreadDAO {
                 stmt.setInt(1, id);
                 ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
-                    new Thread(
+                    return new Thread(
                             rs.getInt("id"),
                             rs.getString("title"),
                             rs.getInt("admin_id")

@@ -1,6 +1,7 @@
 package dto;
 
 public class Post {
+
     private int id;
     private String content;
     private int userId;
