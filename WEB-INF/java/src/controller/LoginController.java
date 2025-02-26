@@ -14,25 +14,23 @@ import java.sql.SQLException;
 
 
 
-@WebServlet("/login")
+@WebServlet("/LoginController")
 public class LoginController extends HttpServlet {
-    private AuthService authService;
+    UserDAO userDAO;
 
     public void init() {
         try {
-            UserDAO userDAO = new UserDAO();
-            authService = new AuthService(userDAO);
+            userDAO = new UserDAO();
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String email = request.getParameter("email");
+        String login = request.getParameter("name");
         String password = request.getParameter("password");
 
-        try {
-            User usr = authService.authenticate(email, password);
+            User usr = userDAO.getIfExists(login, password);
             if (usr != null) {
                 // Si l'authentification réussit, démarrer une session et rediriger l'utilisateur vers le tableau de bord
                 HttpSession session = request.getSession();
@@ -43,9 +41,5 @@ public class LoginController extends HttpServlet {
                 request.setAttribute("error", "Invalid email or password");
                 request.getRequestDispatcher("login.jsp").forward(request, response);
             }
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error");
         }
     }
-}

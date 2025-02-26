@@ -30,19 +30,7 @@ public class UserDAO {
     public User getUserByEmail(String email) throws SQLException {
         try(Connection connection = ds.getConnection()) {
             String sql = "SELECT * FROM usr WHERE email = ?";
-            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setString(1, email);
-                ResultSet rs = stmt.executeQuery();
-                if (rs.next()) {
-                    return new User(
-                            rs.getInt("id"),
-                            rs.getString("name"),
-                            rs.getString("email"),
-                            rs.getString("pwd")
-                    );
-                }
-                return null;
-            }
+            return getUser(email, connection, sql);
         }
     }
 
@@ -63,6 +51,45 @@ public class UserDAO {
                 }
                 return null;
             }
+        }
+    }
+
+    public User getIfExists(String name, String password){
+        try (Connection connection = ds.getConnection()) {
+            String sql = "SELECT * FROM usr WHERE name = ? AND pwd = ?";
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setString(1, name);
+                stmt.setString(2, password);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    return new User(
+                            rs.getInt("id"),
+                            rs.getString("name"),
+                            rs.getString("email"),
+                            rs.getString("pwd")
+                    );
+                }
+                return null;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private User getUser(String name, Connection connection, String sql) throws SQLException {
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, name);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new User(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("pwd")
+                );
+            }
+            return null;
         }
     }
 }
