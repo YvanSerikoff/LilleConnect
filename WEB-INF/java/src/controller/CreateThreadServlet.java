@@ -34,14 +34,18 @@ public class CreateThreadServlet extends HttpServlet {
         int userId = usr.getId();
 
         try {
-            threadDAO.addThread(title, userId);
+            int threadId = threadDAO.addThread(title, userId);
+            if (threadId > 0) {
+                response.sendRedirect("thread.jsp?threadId=" + threadId);
+            } else {
+                request.setAttribute("errorMessage", "Failed to create thread. Please try again.");
+                response.sendRedirect("dashboard.jsp");
+            }
         } catch (SQLException e) {
             System.err.println(e.getMessage());
             request.setAttribute("errorMessage", "Failed to create thread. Please try again.");
-            request.getRequestDispatcher("dashboard.jsp").forward(request, response);
+            response.sendRedirect("dashboard.jsp");
             return;
         }
-        response.sendRedirect("dashboard.jsp");
-
     }
 }

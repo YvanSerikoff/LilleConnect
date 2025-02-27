@@ -13,13 +13,23 @@ public class ThreadDAO {
     }
 
     // Ajouter un fil de discussion
-    public boolean addThread(String title, int adminId) throws SQLException {
+    public int addThread(String title, int adminId) throws SQLException {
+        int threadId = 0;
+
         try(Connection connection = ds.getConnection()) {
             String sql = "INSERT INTO thread (title, admin_id) VALUES (?, ?)";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setString(1, title);
                 stmt.setInt(2, adminId);
-                return stmt.executeUpdate() > 0;
+                stmt.executeUpdate();
+
+                // Récupération de l'ID du thread inséré
+                ResultSet rs = stmt.getGeneratedKeys();
+                if (rs.next()) {
+                    threadId = rs.getInt(1);
+                }
+
+                return threadId;
             }
         }
     }

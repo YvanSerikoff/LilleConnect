@@ -92,4 +92,21 @@ public class UserDAO {
             return null;
         }
     }
+
+    public String getUsername(Integer userId) {
+        try (Connection connection = ds.getConnection()) {
+            String sql = "SELECT name FROM usr WHERE id = ?";
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setInt(1, userId);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    return rs.getString("name");
+                }
+                return null;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

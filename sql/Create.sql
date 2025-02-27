@@ -42,15 +42,3 @@ CREATE TABLE subscriber (
 
 INSERT INTO usr (id, name, email, pwd) VALUES (1, 'admin', 'test@gmail.Com', 'admin');
 INSERT INTO usr (id, name, email, pwd) VALUES (2, 'user', 'test2@gmail.com', 'user');
-
-INSERT INTO thread (id, title, admin_id) VALUES (1, 'test', 1);
-INSERT INTO thread (id, title, admin_id) VALUES (2, 'test2', 1);
-
-INSERT INTO post (id, contenu, usr_id, thread_id) VALUES (1, 'admin test', 1, 1);
-INSERT INTO post (id, contenu, usr_id, thread_id) VALUES (2, 'user test', 2, 1);
-INSERT INTO post (id, contenu, usr_id, thread_id) VALUES (3, 'admin test1', 1, 2);
-INSERT INTO post (id, contenu, usr_id, thread_id) VALUES (4, 'user test2', 2, 1);
-
-INSERT INTO subscriber (usr_id, thread_id) VALUES (1, 1);
-INSERT INTO subscriber (usr_id, thread_id) VALUES (2, 1);
-INSERT INTO subscriber (usr_id, thread_id) VALUES (1, 2);
