@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import dao.DS;
+import dao.ThreadDAO;
 import dto.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,6 +17,9 @@ import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/PostMessageServlet")
 public class PostMessageServlet extends HttpServlet {
+
+    ThreadDAO threadDAO;
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Vérification de l'utilisateur connecté
         HttpSession session = request.getSession();
@@ -33,13 +37,17 @@ public class PostMessageServlet extends HttpServlet {
 
         // Insertion du message dans la base de données
         DS ds = new DS();
+        threadDAO = new ThreadDAO();
         try (Connection conn = ds.getConnection()) {
-            String sql = "INSERT INTO post (contenu, usr_id, thread_id) VALUES (?, ?, ?)";
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setString(1, contenu);
-                stmt.setInt(2, userId);
-                stmt.setInt(3, threadId);
-                stmt.executeUpdate();
+
+            if (threadDAO.isUserSubscribed(userId,threadId)){
+                String sql = "INSERT INTO post (contenu, usr_id, thread_id) VALUES (?, ?, ?)";
+                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                    stmt.setString(1, contenu);
+                    stmt.setInt(2, userId);
+                    stmt.setInt(3, threadId);
+                    stmt.executeUpdate();
+                }
             }
         } catch (SQLException e) {
             System.err.println("Erreur lors de l'ajout du message : " + e.getMessage());

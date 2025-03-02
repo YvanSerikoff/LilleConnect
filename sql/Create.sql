@@ -5,9 +5,8 @@ DROP TABLE IF EXISTS usr;
 
 CREATE TABLE usr (
                              id SERIAL PRIMARY KEY,
-                             name VARCHAR(50) NOT NULL,
-                             pwd VARCHAR(255) NOT NULL,
-                             email VARCHAR(100) NOT NULL UNIQUE
+                             name VARCHAR(50) NOT NULL UNIQUE ,
+                             pwd VARCHAR(255) NOT NULL
 );
 
 -- Table Fil de Discussion
@@ -37,8 +36,3 @@ CREATE TABLE subscriber (
                             FOREIGN KEY (usr_id) REFERENCES usr(id) ON DELETE CASCADE,
                             FOREIGN KEY (thread_id) REFERENCES thread(id) ON DELETE CASCADE
 );
-
-
-
-INSERT INTO usr (id, name, email, pwd) VALUES (1, 'admin', 'test@gmail.Com', 'admin');
-INSERT INTO usr (id, name, email, pwd) VALUES (2, 'user', 'test2@gmail.com', 'user');

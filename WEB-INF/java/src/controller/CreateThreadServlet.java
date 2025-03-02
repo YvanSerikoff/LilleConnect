@@ -35,6 +35,8 @@ public class CreateThreadServlet extends HttpServlet {
 
         try {
             int threadId = threadDAO.addThread(title, userId);
+
+            System.out.println("threadId: " + threadId);
             if (threadId > 0) {
                 response.sendRedirect("thread.jsp?threadId=" + threadId);
             } else {
