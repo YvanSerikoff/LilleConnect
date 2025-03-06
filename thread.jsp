@@ -18,7 +18,7 @@
     User user = (User) userSession.getAttribute("user");
 
     if (user == null) {
-        response.sendRedirect("login.jsp");
+        response.sendRedirect("index.html");
         return;
     }
 
@@ -100,73 +100,68 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%= threadTitle %> - Discussion</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .container { max-width: 600px; margin: auto; }
-        .message { border-bottom: 1px solid #ddd; padding: 10px; }
-        .user { font-weight: bold; }
-        form { margin-top: 20px; }
-        textarea, button, select { width: 100%; padding: 8px; margin: 5px 0; }
-        button { background-color: #007BFF; color: white; border: none; cursor: pointer; }
-        button:hover { background-color: #0056b3; }
-        .alert { color: red; font-weight: bold; margin-top: 20px; }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-
-<header>
-    <button onclick="window.location.href='dashboard.jsp'">Retour au Dashboard</button>
-</header>
 <body>
+<nav class="navbar navbar-dark bg-primary px-3">
+    <a class="navbar-brand" href="dashboard.jsp">Lille Connect</a>
+    <button class="btn btn-light" onclick="window.location.href='dashboard.jsp'">Retour</button>
+</nav>
 
-<div class="container">
-    <h2>Thread: <%= threadTitle %></h2>
-
-    <div>
-        <% for (String[] message : messages) { %>
-        <div class="message">
-            <span class="user"><%= message[0] %> :</span>
-            <p><%= message[1] %></p>
-        </div>
-        <% } %>
-    </div>
-
-    <h3>Publier un Message</h3>
-    <form action="PostMessageServlet" method="post">
-        <input type="hidden" name="threadId" value="<%= threadId %>">
-        <textarea name="contenu" rows="3" required placeholder="Écrivez votre message ici" style="width: 100%; height: 100px; resize: none;"></textarea>
-        <button type="submit">Envoyer</button>
-    </form>
-
-    <% if (isAdmin) { %>
-    <h3>Gestion des abonnés</h3>
-    <h4>Liste des abonnés :</h4>
-    <ul>
-        <% for (String[] sub : subscribers) { %>
-        <li><%= sub[1] %>
-            <% if (Integer.parseInt(sub[0]) != userId) {%>
-            <form action="UnsubscribeServlet" method="post" style="display:inline;">
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h2><%= threadTitle %></h2>
+            <div class="list-group mb-3">
+                <% for (String[] message : messages) { %>
+                <div class="list-group-item">
+                    <strong><%= message[0] %> :</strong>
+                    <p class="mb-0"><%= message[1] %></p>
+                </div>
+                <% } %>
+            </div>
+            <h4>Publier un Message</h4>
+            <form action="PostMessageServlet" method="post">
                 <input type="hidden" name="threadId" value="<%= threadId %>">
-                <input type="hidden" name="userId" value="<%= sub[0] %>">
-                <button type="submit">Désinscrire</button>
+                <textarea class="form-control mb-2" name="contenu" rows="3" required placeholder="Écrivez votre message ici"></textarea>
+                <button type="submit" class="btn btn-primary">Envoyer</button>
+            </form>
+        </div>
+        <div class="col-md-4">
+            <% if (isAdmin) { %>
+            <h4>Gestion des abonnés</h4>
+            <h5>Liste des abonnés :</h5>
+            <ul class="list-group mb-3">
+                <% for (String[] sub : subscribers) { %>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <%= sub[1] %>
+                    <% if (Integer.parseInt(sub[0]) != userId) { %>
+                    <form action="UnsubscribeServlet" method="post" class="d-inline">
+                        <input type="hidden" name="threadId" value="<%= threadId %>">
+                        <input type="hidden" name="userId" value="<%= sub[0] %>">
+                        <button type="submit" class="btn btn-danger btn-sm">Désinscrire</button>
+                    </form>
+                    <% } %>
+                </li>
+                <% } %>
+            </ul>
+            <h5>Inviter un utilisateur :</h5>
+            <form action="InviteUserServlet" method="post">
+                <input type="hidden" name="threadId" value="<%= threadId %>">
+                <select class="form-select mb-2" name="userId" required>
+                    <% for (String[] userEntry : nonSubscribers) { %>
+                    <option value="<%= userEntry[0] %>"><%= userEntry[1] %></option>
+                    <% } %>
+                </select>
+                <button type="submit" class="btn btn-success">Inviter</button>
             </form>
             <% } %>
-        </li>
-        <% } %>
-    </ul>
-
-    <h4>Inviter un utilisateur :</h4>
-    <form action="InviteUserServlet" method="post">
-        <input type="hidden" name="threadId" value="<%= threadId %>">
-        <select name="userId" required>
-            <% for (String[] userEntry : nonSubscribers) { %>
-            <option value="<%= userEntry[0] %>"><%= userEntry[1] %></option>
-            <% } %>
-        </select>
-        <button type="submit">Inviter</button>
-    </form>
-    <% } %>
+        </div>
+    </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -5,5 +5,5 @@
     if (session != null) {
         session.invalidate(); // Invalider la session
     }
-    response.sendRedirect("login.jsp"); // Rediriger vers la page de login
+    response.sendRedirect("index.html"); // Rediriger vers la page de login
 %>

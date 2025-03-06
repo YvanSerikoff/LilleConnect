@@ -26,7 +26,7 @@ public class CreateUserServlet extends HttpServlet{
 
         try {
             userDAO.addUser(login,password);
-            response.sendRedirect("login.jsp");
+            response.sendRedirect("index.html");
         } catch (SQLException e) {
             System.err.println(e.getMessage());
             request.setAttribute("errorMessage", "Failed to create user. Please try again.");

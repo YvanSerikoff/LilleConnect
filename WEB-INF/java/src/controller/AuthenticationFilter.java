@@ -17,9 +17,9 @@ public class AuthenticationFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse) response;
         HttpSession session = req.getSession(false);
 
-        // Si la session est null ou l'utilisateur n'est pas authentifié, rediriger vers login.jsp
+        // Si la session est null ou l'utilisateur n'est pas authentifié, rediriger vers index.html
         if (session == null || session.getAttribute("user") == null) {
-            res.sendRedirect("login.jsp");
+            res.sendRedirect("index.html");
         } else {
             chain.doFilter(request, response); // Continuer la chaîne de filtres
         }

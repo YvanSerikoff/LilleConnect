@@ -10,7 +10,7 @@
     User user = (User) sessionObj.getAttribute("user");
 
     if (user == null) {
-        response.sendRedirect("login.jsp");
+        response.sendRedirect("index.html");
         return;
     }
 
@@ -29,47 +29,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; }
-        form, .thread-list { margin: 20px auto; width: 50%; }
-        input, button { margin-top: 10px; padding: 10px; }
-        ul { list-style-type: none; padding: 0; }
-        li { margin: 10px 0; }
-    </style>
+    <title>Dashboard - Lille Connect</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
+<body class="d-flex flex-column align-items-center bg-light py-5">
+<div class="container text-center">
+    <h1 class="mb-4">Lille Connect</h1>
+    <h2>Bienvenue, <%= user.getName() %> 👋</h2>
 
-<h2>Bienvenue, <%= user.getName() %> 👋</h2>
+    <!-- Formulaire de création de thread -->
+    <div class="card p-4 shadow-sm mt-4" style="max-width: 500px;">
+        <h3>Créer un nouveau fil de discussion</h3>
+        <form action="CreateThreadServlet" method="post">
+            <div class="mb-3">
+                <input type="text" name="title" class="form-control" placeholder="Titre du thread" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Créer</button>
+        </form>
+    </div>
 
-<!-- Formulaire de création de thread -->
-<h3>Créer un nouveau fil de discussion</h3>
-<form action="CreateThreadServlet" method="post">
-    <input type="text" name="title" placeholder="Titre du thread" required>
-    <button type="submit">Créer</button>
-</form>
+    <!-- Bouton de déconnexion -->
+    <form action="LogoutServlet" method="post" class="mt-3">
+        <button type="submit" class="btn btn-danger">Déconnexion</button>
+    </form>
 
-<!-- Bouton de déconnexion -->
-<form action="LogoutServlet" method="post">
-    <button type="submit" style="background-color: red; color: white;">Déconnexion</button>
-</form>
-
-<!-- Liste des threads abonnés -->
-<h3>Vos fils de discussion</h3>
-<div class="thread-list">
-    <ul>
-        <% if (subscribedThreads != null && !subscribedThreads.isEmpty()) {
-            for (Thread thread : subscribedThreads) { %>
-        <li>
-            <a href="thread.jsp?threadId=<%= thread.getId() %>">
-                <%= thread.getTitle() %>
-            </a>
-        </li>
-        <% }
-        } else { %>
-        <p>Vous n'êtes abonné à aucun fil de discussion.</p>
-        <% } %>
-    </ul>
+    <!-- Liste des threads abonnés -->
+    <div class="card p-4 shadow-sm mt-4" style="max-width: 500px;">
+        <h3>Vos fils de discussion</h3>
+        <ul class="list-group">
+            <% if (subscribedThreads != null && !subscribedThreads.isEmpty()) {
+                for (Thread thread : subscribedThreads) { %>
+            <li class="list-group-item">
+                <a href="thread.jsp?threadId=<%= thread.getId() %>" class="text-decoration-none">
+                    <%= thread.getTitle() %>
+                </a>
+            </li>
+            <% }
+            } else { %>
+            <p class="text-muted">Vous n'êtes abonné à aucun fil de discussion.</p>
+            <% } %>
+        </ul>
+    </div>
 </div>
 
 </body>

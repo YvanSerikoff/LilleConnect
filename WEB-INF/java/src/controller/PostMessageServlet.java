@@ -27,7 +27,7 @@ public class PostMessageServlet extends HttpServlet {
         Integer userId = user.getId();
 
         if (userId == null) {
-            response.sendRedirect("login.jsp");
+            response.sendRedirect("index.html");
             return;
         }
 
