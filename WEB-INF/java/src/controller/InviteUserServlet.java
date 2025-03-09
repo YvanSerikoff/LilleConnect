@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import dao.DS;
+import dao.SubscriberDAO;
+import dao.ThreadDAO;
 import dto.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -29,27 +31,12 @@ public class InviteUserServlet extends HttpServlet {
         int threadId = Integer.parseInt(request.getParameter("threadId"));
         int invitedUserId = Integer.parseInt(request.getParameter("userId"));
 
-        DS ds = new DS();
+        SubscriberDAO subscriberDAO = new SubscriberDAO();
 
-        try (Connection conn = ds.getConnection()) {
-            // Vérifier que l'utilisateur connecté est bien l'admin du thread
-            PreparedStatement checkAdminStmt = conn.prepareStatement(
-                    "SELECT admin_id FROM thread WHERE id = ?"
-            );
-            checkAdminStmt.setInt(1, threadId);
-            var rs = checkAdminStmt.executeQuery();
-
-            if (rs.next() && rs.getInt("admin_id") == adminId) {
-                // Ajouter l'utilisateur dans subscriber
-                PreparedStatement inviteStmt = conn.prepareStatement(
-                        "INSERT INTO subscriber (usr_id, thread_id) VALUES (?, ?)"
-                );
-                inviteStmt.setInt(1, invitedUserId);
-                inviteStmt.setInt(2, threadId);
-                inviteStmt.executeUpdate();
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        try{
+            subscriberDAO.addSubscriber(invitedUserId, threadId, adminId);
+        }catch (SQLException e){
+            throw new RuntimeException(e);
         }
 
         response.sendRedirect("thread.jsp?threadId=" + threadId);

@@ -5,7 +5,6 @@
 <%@ page import="dto.User" %>
 <%@ page import="java.sql.SQLException" %>
 <%
-    // Vérifier si l'utilisateur est connecté
     HttpSession sessionObj = request.getSession();
     User user = (User) sessionObj.getAttribute("user");
 
@@ -14,7 +13,6 @@
         return;
     }
 
-    // Récupérer les threads auxquels l'utilisateur est abonné
     List<Thread> subscribedThreads = null;
     try {
         ThreadDAO threadDAO = new ThreadDAO();
@@ -29,48 +27,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Lille Connect</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .sidebar { background: #f8f9fa; padding: 20px; overflow-y: auto; }
+        .content { padding: 20px; }
+        .header { background: #007bff; color: white; padding: 10px; text-align: center; }
+        .logout-btn { background: red; color: white; border: none; padding: 5px 10px; }
+        .logout-btn:hover { background: darkred; }
+    </style>
 </head>
-<body class="d-flex flex-column align-items-center bg-light py-5">
-<div class="container text-center">
-    <h1 class="mb-4">Lille Connect</h1>
-    <h2>Bienvenue, <%= user.getName() %> 👋</h2>
+<body>
 
-    <!-- Formulaire de création de thread -->
-    <div class="card p-4 shadow-sm mt-4" style="max-width: 500px;">
-        <h3>Créer un nouveau fil de discussion</h3>
-        <form action="CreateThreadServlet" method="post">
-            <div class="mb-3">
-                <input type="text" name="title" class="form-control" placeholder="Titre du thread" required>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Créer</button>
-        </form>
-    </div>
-
-    <!-- Bouton de déconnexion -->
-    <form action="LogoutServlet" method="post" class="mt-3">
-        <button type="submit" class="btn btn-danger">Déconnexion</button>
+<div class="header">
+    <h1 class="h4">Lille Connect</h1>
+    <form action="LogoutServlet" method="post" class="d-inline">
+        <button type="submit" class="logout-btn btn btn-sm">Déconnexion</button>
     </form>
-
-    <!-- Liste des threads abonnés -->
-    <div class="card p-4 shadow-sm mt-4" style="max-width: 500px;">
-        <h3>Vos fils de discussion</h3>
-        <ul class="list-group">
-            <% if (subscribedThreads != null && !subscribedThreads.isEmpty()) {
-                for (Thread thread : subscribedThreads) { %>
-            <li class="list-group-item">
-                <a href="thread.jsp?threadId=<%= thread.getId() %>" class="text-decoration-none">
-                    <%= thread.getTitle() %>
-                </a>
-            </li>
-            <% }
-            } else { %>
-            <p class="text-muted">Vous n'êtes abonné à aucun fil de discussion.</p>
-            <% } %>
-        </ul>
-    </div>
 </div>
 
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar (visible en mode large, en haut en mode mobile) -->
+        <nav class="col-md-3 col-12 sidebar">
+            <h3 class="h5 text-center text-md-start">Vos fils de discussion</h3>
+            <ul class="list-group">
+                <% if (subscribedThreads != null && !subscribedThreads.isEmpty()) {
+                    for (Thread thread : subscribedThreads) { %>
+                <li class="list-group-item text-center text-md-start">
+                    <a href="thread.jsp?threadId=<%= thread.getId() %>" class="text-decoration-none"><%= thread.getTitle() %></a>
+                </li>
+                <% } } else { %>
+                <p class="text-center text-md-start">Vous n'êtes abonné à aucun fil de discussion.</p>
+                <% } %>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="col-md-9 col-12 content">
+            <h3 class="h5">Créer un nouveau fil de discussion</h3>
+            <form action="CreateThreadServlet" method="post" class="mb-3">
+                <input type="text" name="title" class="form-control mb-2" placeholder="Titre du thread" required>
+                <button type="submit" class="btn btn-primary w-100">Créer</button>
+            </form>
+        </main>
+    </div>
+</div>
 </body>
 </html>

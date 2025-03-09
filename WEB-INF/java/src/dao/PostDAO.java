@@ -47,4 +47,25 @@ public class PostDAO {
         }
     }
 
+    public List<Post> findByUserId(int id) {
+        try (Connection connection = ds.getConnection()) {
+            String sql = "SELECT * FROM post WHERE usr_id = ?";
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setInt(1, id);
+                ResultSet rs = stmt.executeQuery();
+                List<Post> posts = new ArrayList<>();
+                while (rs.next()) {
+                    posts.add(new Post(
+                            rs.getInt("id"),
+                            rs.getString("contenu"),
+                            rs.getInt("usr_id"),
+                            rs.getInt("thread_id")
+                    ));
+                }
+                return posts;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -3,6 +3,8 @@ package dao;
 import java.io.IOException;
 import java.sql.*;
 import java.util.*;
+
+import dto.Post;
 import dto.Thread;
 
 public class ThreadDAO {
@@ -121,6 +123,29 @@ public class ThreadDAO {
             }
             return threads;
         }catch (SQLException e){
+            System.err.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public List<Post> getMessages(int threadId) {
+        List<Post> messages = new ArrayList<>();
+        try (Connection connection = ds.getConnection()) {
+            String sql = "SELECT * FROM post WHERE thread_id = ?";
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setInt(1, threadId);
+                ResultSet rs = stmt.executeQuery();
+                while (rs.next()) {
+                    messages.add(new Post(
+                            rs.getInt("id"),
+                            rs.getString("content"),
+                            rs.getInt("usr_id"),
+                            rs.getInt("thread_id")
+                    ));
+                }
+                return messages;
+            }
+        } catch (SQLException e) {
             System.err.println(e.getMessage());
             return null;
         }

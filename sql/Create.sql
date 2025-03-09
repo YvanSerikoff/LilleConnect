@@ -1,7 +1,8 @@
-DROP TABLE IF EXISTS subscriber;
-DROP TABLE IF EXISTS post;
-DROP TABLE IF EXISTS thread;
-DROP TABLE IF EXISTS usr;
+DROP TABLE IF EXISTS subscriber CASCADE;
+DROP TABLE IF EXISTS post CASCADE;
+DROP TABLE IF EXISTS thread CASCADE;
+DROP TABLE IF EXISTS usr CASCADE;
+DROP TABLE IF EXISTS likes CASCADE;
 
 CREATE TABLE usr (
                              id SERIAL PRIMARY KEY,
@@ -9,7 +10,6 @@ CREATE TABLE usr (
                              pwd VARCHAR(255) NOT NULL
 );
 
--- Table Fil de Discussion
 CREATE TABLE thread (
                                id SERIAL PRIMARY KEY,
                                title VARCHAR(100) NOT NULL,
@@ -17,7 +17,6 @@ CREATE TABLE thread (
                                FOREIGN KEY (admin_id) REFERENCES usr(id) ON DELETE CASCADE
 );
 
--- Table Message
 CREATE TABLE post (
                          id SERIAL PRIMARY KEY,
                          contenu TEXT NOT NULL,
@@ -28,11 +27,18 @@ CREATE TABLE post (
                          FOREIGN KEY (thread_id) REFERENCES thread(id) ON DELETE CASCADE
 );
 
--- Table Abonnement (relation entre Utilisateur et Fil de Discussion)
 CREATE TABLE subscriber (
                             usr_id INT NOT NULL,
                             thread_id INT NOT NULL,
                             PRIMARY KEY (usr_id, thread_id),
                             FOREIGN KEY (usr_id) REFERENCES usr(id) ON DELETE CASCADE,
                             FOREIGN KEY (thread_id) REFERENCES thread(id) ON DELETE CASCADE
+);
+
+CREATE TABLE likes (
+                    usr_id INT NOT NULL,
+                    post_id INT NOT NULL,
+                    PRIMARY KEY (usr_id, post_id),
+                    FOREIGN KEY (usr_id) REFERENCES usr(id) ON DELETE CASCADE,
+                    FOREIGN KEY (post_id) REFERENCES post(id) ON DELETE CASCADE
 );
