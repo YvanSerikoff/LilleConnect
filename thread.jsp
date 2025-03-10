@@ -6,7 +6,6 @@
 <%@ page import="dao.LikeDAO" %>
 
 <%
-    // Récupération de l'ID du thread
     String threadIdStr = request.getParameter("threadId");
     if (threadIdStr == null) {
         response.sendRedirect("dashboard.jsp");
@@ -14,12 +13,11 @@
     }
     int threadId = Integer.parseInt(threadIdStr);
 
-    // Vérification de l'utilisateur connecté
     HttpSession userSession = request.getSession();
     User user = (User) userSession.getAttribute("user");
 
     if (user == null) {
-        response.sendRedirect("index.html");
+        response.sendRedirect("/LilleConnect/index.html");
         return;
     }
 
@@ -35,7 +33,6 @@
     DS ds = new DS();
 
     try (Connection conn = ds.getConnection()) {
-        // Récupérer les infos du thread
         PreparedStatement stmtThread = conn.prepareStatement("SELECT title, admin_id FROM thread WHERE id = ?");
         stmtThread.setInt(1, threadId);
         ResultSet rsThread = stmtThread.executeQuery();
@@ -47,7 +44,6 @@
             return;
         }
 
-        // Récupérer les messages et leurs likes
         PreparedStatement stmtMessages = conn.prepareStatement(
                 "SELECT post.id, post.contenu, usr.name, post.usr_id FROM post " +
                         "JOIN usr ON post.usr_id = usr.id WHERE thread_id = ? ORDER BY post.id ASC"
@@ -66,7 +62,6 @@
             });
         }
 
-        // Récupérer la liste des abonnés
         PreparedStatement stmtSubscribers = conn.prepareStatement(
                 "SELECT usr.id, usr.name FROM subscriber JOIN usr ON subscriber.usr_id = usr.id WHERE subscriber.thread_id = ?"
         );
@@ -76,7 +71,6 @@
             subscribers.add(new String[]{rsSubscribers.getString("id"), rsSubscribers.getString("name")});
         }
 
-        // Récupérer la liste des utilisateurs non abonnés (pour les invitations)
         PreparedStatement stmtNonSubscribers = conn.prepareStatement(
                 "SELECT usr.id, usr.name FROM usr WHERE usr.id NOT IN " +
                         "(SELECT usr_id FROM subscriber WHERE thread_id = ?) AND usr.id != ?"
@@ -120,7 +114,6 @@
 <div class="container">
     <h2 class="mt-4"><%= threadTitle %></h2>
 
-    <!-- Liste des messages -->
     <div class="mt-4">
         <% for (String[] message : messages) {
             boolean isAuthor = Integer.parseInt(message[2]) == userId;
@@ -129,7 +122,7 @@
             <div class="message <%= isAuthor ? "message-right" : "message-left" %>">
                 <div class="username"><%= message[0] %></div>
                 <p><%= message[1] %></p>
-                <form action="LikePostServlet" method="post">
+                <form action="like" method="post">
                     <input type="hidden" name="messageId" value="<%= message[3] %>">
                     <input type="hidden" name="threadId" value="<%= threadId %>">
                     <button type="submit" class="btn btn-danger"> ❤ <%= message[4] %></button>
@@ -139,9 +132,8 @@
         <% } %>
     </div>
 
-    <!-- Formulaire pour poster un message -->
     <h3 class="mt-4">Publier un Message</h3>
-    <form action="PostMessageServlet" method="post">
+    <form action="postMessage" method="post">
         <input type="hidden" name="threadId" value="<%= threadId %>">
         <textarea name="contenu" rows="3" class="form-control" required placeholder="Écrivez votre message ici"></textarea>
         <button type="submit" class="btn btn-primary mt-2">Envoyer</button>
@@ -156,7 +148,7 @@
             <li class="list-group-item d-flex justify-content-between align-items-center">
                 <%= sub[1] %>
                 <% if (Integer.parseInt(sub[0]) != userId) { %>
-                <form action="UnsubscribeServlet" method="post">
+                <form action="unsubscribe" method="post">
                     <input type="hidden" name="threadId" value="<%= threadId %>">
                     <input type="hidden" name="userId" value="<%= sub[0] %>">
                     <button type="submit" class="btn btn-danger btn-sm">Désinscrire</button>
@@ -167,7 +159,7 @@
         </ul>
 
         <h4 class="mt-3">Inviter un utilisateur :</h4>
-        <form action="InviteUserServlet" method="post">
+        <form action="invite" method="post">
             <input type="hidden" name="threadId" value="<%= threadId %>">
             <select name="userId" class="form-select mb-2">
                 <% for (String[] userEntry : nonSubscribers) { %>

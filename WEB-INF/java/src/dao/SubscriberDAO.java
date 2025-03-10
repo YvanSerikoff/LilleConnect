@@ -9,7 +9,6 @@ public class SubscriberDAO {
     public SubscriberDAO() throws IOException {
     }
 
-    // Ajouter un abonnement
     public void addSubscriber(int userId, int threadId, int adminId) throws SQLException {
         try (Connection connection = ds.getConnection()) {
             String sql = "SELECT admin_id FROM thread WHERE id = ?";
@@ -31,7 +30,6 @@ public class SubscriberDAO {
 
     }
 
-    // Vérifier si un utilisateur est abonné à un fil
     public boolean isSubscribed(int userId, int threadId) throws SQLException {
         try(Connection connection = ds.getConnection()) {
             String sql = "SELECT 1 FROM subscriber WHERE usr_id = ? AND thread_id = ?";
@@ -44,7 +42,6 @@ public class SubscriberDAO {
         }
     }
 
-    // Supprimer un abonnement
     public void removeSubscriber(int userId, int threadId, int admin_id) throws SQLException {
         try(Connection connection = ds.getConnection()) {
             String sql = "SELECT admin_id FROM thread WHERE id = ?";

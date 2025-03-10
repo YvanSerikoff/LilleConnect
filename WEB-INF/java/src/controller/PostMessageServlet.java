@@ -19,7 +19,6 @@ public class PostMessageServlet extends HttpServlet {
     PostDAO postDAO;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Vérification de l'utilisateur connecté
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         Integer userId = user.getId();
@@ -29,7 +28,6 @@ public class PostMessageServlet extends HttpServlet {
             return;
         }
 
-        // Récupération des paramètres du formulaire
         String contenu = request.getParameter("contenu");
         int threadId = Integer.parseInt(request.getParameter("threadId"));
 
@@ -44,7 +42,6 @@ public class PostMessageServlet extends HttpServlet {
             throw new RuntimeException(ex);
         }
 
-        // Redirection vers la page du thread
         response.sendRedirect("thread.jsp?threadId=" + threadId);
     }
 }

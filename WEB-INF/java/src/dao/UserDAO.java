@@ -13,7 +13,6 @@ public class UserDAO {
         this.ds = new DS();
     }
 
-    // Ajouter un utilisateur
     public boolean addUser(String name, String password) throws SQLException {
         try(Connection connection = ds.getConnection()) {
             String sql = "INSERT INTO usr (name, pwd) VALUES (?, ?)";
@@ -25,7 +24,6 @@ public class UserDAO {
         }
     }
 
-    // Récupérer un utilisateur par ID
     public User getUserById(int id) throws SQLException {
         try (Connection connection = ds.getConnection()) {
             String sql = "SELECT * FROM usr WHERE id = ?";

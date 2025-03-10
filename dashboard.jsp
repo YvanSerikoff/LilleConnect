@@ -9,7 +9,7 @@
     User user = (User) sessionObj.getAttribute("user");
 
     if (user == null) {
-        response.sendRedirect("index.html");
+        response.sendRedirect("/LilleConnect/index.html");
         return;
     }
 
@@ -42,14 +42,13 @@
 
 <div class="header">
     <h1 class="h4">Lille Connect</h1>
-    <form action="LogoutServlet" method="post" class="d-inline">
+    <form action="logout" method="post" class="d-inline">
         <button type="submit" class="logout-btn btn btn-sm">Déconnexion</button>
     </form>
 </div>
 
 <div class="container-fluid">
     <div class="row">
-        <!-- Sidebar (visible en mode large, en haut en mode mobile) -->
         <nav class="col-md-3 col-12 sidebar">
             <h3 class="h5 text-center text-md-start">Vos fils de discussion</h3>
             <ul class="list-group">
@@ -64,10 +63,9 @@
             </ul>
         </nav>
 
-        <!-- Main Content -->
         <main class="col-md-9 col-12 content">
             <h3 class="h5">Créer un nouveau fil de discussion</h3>
-            <form action="CreateThreadServlet" method="post" class="mb-3">
+            <form action="createThread" method="post" class="mb-3">
                 <input type="text" name="title" class="form-control mb-2" placeholder="Titre du thread" required>
                 <button type="submit" class="btn btn-primary w-100">Créer</button>
             </form>

@@ -24,11 +24,9 @@ public class CreateThreadServlet extends HttpServlet {
         }
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Récupérer les données du formulaire
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String title = request.getParameter("title");
 
-        // Récupérer l'ID de l'utilisateur connecté (depuis la session)
         HttpSession session = request.getSession();
         User usr = (User) session.getAttribute("user");
         int userId = usr.getId();

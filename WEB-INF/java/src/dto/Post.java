@@ -7,7 +7,6 @@ public class Post {
     private int userId;
     private int threadId;
 
-    // Constructeur
     public Post(int id, String content, int userId, int threadId) {
         this.id = id;
         this.content = content;
@@ -15,7 +14,6 @@ public class Post {
         this.threadId = threadId;
     }
 
-    // Getters et Setters
     public int getId() {
         return id;
     }

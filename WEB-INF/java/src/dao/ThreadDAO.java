@@ -14,7 +14,6 @@ public class ThreadDAO {
         this.ds = new DS();
     }
 
-    // Ajouter un fil de discussion
     public int addThread(String title, int adminId) throws SQLException {
         int threadId = 0;
 
@@ -44,7 +43,6 @@ public class ThreadDAO {
         }
     }
 
-    // Récupérer un fil de discussion par ID
     public Thread getThreadById(int id) throws SQLException {
         try(Connection connection = ds.getConnection()) {
             String sql = "SELECT * FROM thread WHERE id = ?";
@@ -85,7 +83,6 @@ public class ThreadDAO {
         }
     }
 
-    // Récupérer tous les fils de discussion d'un utilisateur
     public List<Thread> getThreadsByUserId(int userId) throws SQLException {
         try(Connection connection = ds.getConnection()) {
             String sql = "SELECT t.* FROM thread t JOIN subscriber s ON t.id = s.thread_id WHERE s.usr_id = ?";

@@ -10,12 +10,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 
-
-@WebServlet("/LoginController")
-public class LoginController extends HttpServlet {
+@WebServlet("/LoginServlet")
+public class LoginServlet extends HttpServlet {
     UserDAO userDAO;
 
     public void init() {
@@ -26,18 +24,16 @@ public class LoginController extends HttpServlet {
         }
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String login = request.getParameter("name");
         String password = request.getParameter("password");
 
             User usr = userDAO.getIfExists(login, password);
             if (usr != null) {
-                // Si l'authentification réussit, démarrer une session et rediriger l'utilisateur vers le tableau de bord
                 HttpSession session = request.getSession();
                 session.setAttribute("user", usr);
-                response.sendRedirect("dashboard.jsp"); // Remplace par la page d'accueil de l'application
+                response.sendRedirect("dashboard.jsp");
             } else {
-                // Si l'authentification échoue, rediriger vers la page de connexion avec un message d'erreur
                 request.setAttribute("error", "Invalid email or password");
                 request.getRequestDispatcher("index.html").forward(request, response);
             }

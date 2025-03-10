@@ -7,14 +7,12 @@ public class Thread {
     private String title;
     private int adminId;
 
-    // Constructeur
     public Thread(int id, String title, int adminId) {
         this.id = id;
         this.title = title;
         this.adminId = adminId;
     }
 
-    // Getters et Setters
     public int getId() {
         return id;
     }

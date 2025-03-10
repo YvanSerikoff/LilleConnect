@@ -1,0 +1,25 @@
+# IntelliJ IDEA
+.idea/
+*.iml
+out/
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+
+# Logs
+*.log
+
+# npm
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# SQL
+*.sql
+
+# OS-specific files
+.DS_Store
+Thumbs.db
