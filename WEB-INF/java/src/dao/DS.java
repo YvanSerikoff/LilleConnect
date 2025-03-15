@@ -13,7 +13,7 @@ public class DS {
     public DS() throws IOException {
         try{
             properties = new Properties();
-            properties.load(new FileInputStream("/home/infoetu/yvan.serikoff.etu/config.prop"));
+            properties.load(new FileInputStream("C:\\Program Files\\Apache Software Foundation\\Tomcat 10.1\\webapps\\LilleConnect\\WEB-INF\\java\\src\\dao\\config.prop"));
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -66,4 +66,17 @@ public class PostDAO {
             throw new RuntimeException(e);
         }
     }
+
+    public boolean deletePost(int postId, int id) {
+        try (Connection connection = ds.getConnection()) {
+            String sql = "DELETE FROM post WHERE id = ? AND usr_id = ?";
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setInt(1, postId);
+                stmt.setInt(2, id);
+                return stmt.executeUpdate() > 0;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

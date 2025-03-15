@@ -42,8 +42,16 @@ public class FrontController extends HttpServlet {
                 request.getRequestDispatcher("/PostMessageServlet").forward(request, response);
                 break;
 
+            case "/deletePost":
+                request.getRequestDispatcher("/DeletePostServlet").forward(request, response);
+                break;
+
             case "/createThread":
                 request.getRequestDispatcher("/CreateThreadServlet").forward(request, response);
+                break;
+
+            case "/deleteThread":
+                request.getRequestDispatcher("/DeleteThreadServlet").forward(request, response);
                 break;
 
             case "/login":

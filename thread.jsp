@@ -122,11 +122,20 @@
             <div class="message <%= isAuthor ? "message-right" : "message-left" %>">
                 <div class="username"><%= message[0] %></div>
                 <p><%= message[1] %></p>
-                <form action="like" method="post">
+                <form action="like" method="post" style="display:inline;">
                     <input type="hidden" name="messageId" value="<%= message[3] %>">
                     <input type="hidden" name="threadId" value="<%= threadId %>">
                     <button type="submit" class="btn btn-danger"> ❤ <%= message[4] %></button>
                 </form>
+
+                <%-- Bouton de suppression (visible uniquement pour l'auteur du message) --%>
+                <% if (isAuthor) { %>
+                <form action="deletePost" method="post" style="display:inline;">
+                    <input type="hidden" name="postId" value="<%= message[3] %>">
+                    <input type="hidden" name="threadId" value="<%= threadId %>">
+                    <button type="submit" class="btn btn-warning btn-sm">🗑 Supprimer</button>
+                </form>
+                <% } %>
             </div>
         </div>
         <% } %>
@@ -170,6 +179,14 @@
         </form>
     </div>
     <% } %>
+    <div class="mt-5">
+        <% if (isAdmin) { %>
+        <form action="deleteThread" method="post">
+            <input type="hidden" name="threadId" value="<%= threadId %>">
+            <button type="submit" class="btn btn-danger mt-3">🗑 Supprimer le Thread</button>
+        </form>
+        <% } %>
+    </div>
 </div>
 
 

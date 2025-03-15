@@ -19,18 +19,18 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet("/CreateUserServlet")
 public class CreateUserServlet extends HttpServlet{
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String login = request.getParameter("name");
         String password = request.getParameter("password");
         UserDAO userDAO = new UserDAO();
 
         try {
             userDAO.addUser(login,password);
-            response.sendRedirect("index.html");
+            response.sendRedirect("/LilleConnect/index.html");
         } catch (SQLException e) {
             System.err.println(e.getMessage());
             request.setAttribute("errorMessage", "Failed to create user. Please try again.");
-            response.sendRedirect("creation.html");
+            response.sendRedirect("/LilleConnect/creation.html");
             return;
         }
     }

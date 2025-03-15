@@ -147,4 +147,18 @@ public class ThreadDAO {
             return null;
         }
     }
+
+    public boolean deleteThread(int threadId, int id) {
+        try (Connection connection = ds.getConnection()) {
+            String sql = "DELETE FROM thread WHERE id = ? AND admin_id = ?";
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setInt(1, threadId);
+                stmt.setInt(2, id);
+                return stmt.executeUpdate() > 0;
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            return false;
+        }
+    }
 }
