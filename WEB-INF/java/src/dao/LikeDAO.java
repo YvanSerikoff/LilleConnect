@@ -40,7 +40,7 @@ public class LikeDAO {
         }
     }
 
-    public int getLikesCount(int post_id) {
+    public int getLikeCount(int post_id) {
         try (Connection conn = ds.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(
                     "SELECT COUNT(*) FROM likes WHERE post_id = ?"

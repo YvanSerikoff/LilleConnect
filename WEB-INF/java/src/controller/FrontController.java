@@ -30,10 +30,6 @@ public class FrontController extends HttpServlet {
         }
 
         switch (path) {
-            case "/posts":
-                request.getRequestDispatcher("/UserPostServlet").forward(request, response);
-                break;
-
             case "/like":
                 request.getRequestDispatcher("/LikePostServlet").forward(request, response);
                 break;

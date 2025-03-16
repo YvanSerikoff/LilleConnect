@@ -2,6 +2,8 @@ package dao;
 
 import java.io.IOException;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SubscriberDAO {
     private DS ds = new DS();
@@ -60,5 +62,38 @@ public class SubscriberDAO {
                 }
             }
         }
+    }
+
+    public List<String[]> getSubscribers(int threadId) throws SQLException {
+        List<String[]> users = new ArrayList<>();
+        try(Connection connection = ds.getConnection()) {
+            String sql = "SELECT u.id, u.name FROM usr u JOIN subscriber s ON u.id = s.usr_id AND s.thread_id = ?";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, threadId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                users.add(new String[]{rs.getString("id"), rs.getString("name")});
+            }
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return users;
+    }
+
+    public List<String[]> getNonSubscribers(int threadId) throws SQLException {
+        List<String[]> users = new ArrayList<>();
+        try(Connection connection = ds.getConnection()) {
+            String sql = "SELECT u.id, u.name FROM usr u LEFT JOIN subscriber s ON u.id = s.usr_id AND s.thread_id = ? WHERE s.usr_id IS NULL";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, threadId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                users.add(new String[]{rs.getString("id"), rs.getString("name")});
+            }
+            System.out.println(users);
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return users;
     }
 }

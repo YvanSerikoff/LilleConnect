@@ -1,10 +1,9 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page import="java.sql.*, java.util.*" %>
-<%@ page import="dao.DS" %>
 <%@ page import="jakarta.servlet.http.HttpSession" %>
 <%@ page import="dto.User" %>
-<%@ page import="dao.LikeDAO" %>
 <%@ page import="org.apache.tomcat.jakartaee.commons.lang3.StringEscapeUtils"%>
+<%@ page import="dao.*" %>
 
 <%
     String threadIdStr = request.getParameter("threadId");
@@ -22,67 +21,26 @@
         return;
     }
 
-    Integer userId = user.getId();
+    int userId = user.getId();
+    int likeCount;
     boolean isAdmin = false;
     String threadTitle = "";
+
     LikeDAO likeDAO = new LikeDAO();
+    SubscriberDAO subscriberDAO = new SubscriberDAO();
+    ThreadDAO threadDAO = new ThreadDAO();
+    PostDAO postDAO = new PostDAO();
 
     List<String[]> messages = new ArrayList<>();
     List<String[]> subscribers = new ArrayList<>();
     List<String[]> nonSubscribers = new ArrayList<>();
 
-    DS ds = new DS();
-
-    try (Connection conn = ds.getConnection()) {
-        PreparedStatement stmtThread = conn.prepareStatement("SELECT title, admin_id FROM thread WHERE id = ?");
-        stmtThread.setInt(1, threadId);
-        ResultSet rsThread = stmtThread.executeQuery();
-        if (rsThread.next()) {
-            threadTitle = rsThread.getString("title");
-            isAdmin = (rsThread.getInt("admin_id") == userId); // Vérifie si l'utilisateur est l'admin
-        } else {
-            response.sendRedirect("dashboard.jsp");
-            return;
-        }
-
-        PreparedStatement stmtMessages = conn.prepareStatement(
-                "SELECT post.id, post.contenu, usr.name, post.usr_id FROM post " +
-                        "JOIN usr ON post.usr_id = usr.id WHERE thread_id = ? ORDER BY post.id ASC"
-        );
-        stmtMessages.setInt(1, threadId);
-        ResultSet rsMessages = stmtMessages.executeQuery();
-        while (rsMessages.next()) {
-            int messageId = rsMessages.getInt("id");
-            int likeCount = likeDAO.getLikesCount(messageId);
-            messages.add(new String[]{
-                    rsMessages.getString("name"),
-                    rsMessages.getString("contenu"),
-                    rsMessages.getString("usr_id"),
-                    String.valueOf(messageId),
-                    String.valueOf(likeCount)
-            });
-        }
-
-        PreparedStatement stmtSubscribers = conn.prepareStatement(
-                "SELECT usr.id, usr.name FROM subscriber JOIN usr ON subscriber.usr_id = usr.id WHERE subscriber.thread_id = ?"
-        );
-        stmtSubscribers.setInt(1, threadId);
-        ResultSet rsSubscribers = stmtSubscribers.executeQuery();
-        while (rsSubscribers.next()) {
-            subscribers.add(new String[]{rsSubscribers.getString("id"), rsSubscribers.getString("name")});
-        }
-
-        PreparedStatement stmtNonSubscribers = conn.prepareStatement(
-                "SELECT usr.id, usr.name FROM usr WHERE usr.id NOT IN " +
-                        "(SELECT usr_id FROM subscriber WHERE thread_id = ?) AND usr.id != ?"
-        );
-        stmtNonSubscribers.setInt(1, threadId);
-        stmtNonSubscribers.setInt(2, userId); // Exclure l'admin
-        ResultSet rsNonSubscribers = stmtNonSubscribers.executeQuery();
-        while (rsNonSubscribers.next()) {
-            nonSubscribers.add(new String[]{rsNonSubscribers.getString("id"), rsNonSubscribers.getString("name")});
-        }
-
+    try {
+        threadTitle = threadDAO.getThreadTitle(threadId);
+        isAdmin = threadDAO.isAdministrator(userId, threadId);
+        messages = postDAO.getPostsByThreadId(threadId);
+        subscribers = subscriberDAO.getSubscribers(threadId);
+        nonSubscribers = subscriberDAO.getNonSubscribers(threadId);
     } catch (SQLException e) {
         System.out.println(e.getMessage());
     }
@@ -123,13 +81,13 @@
             <div class="message <%= isAuthor ? "message-right" : "message-left" %>">
                 <div class="username"><%= message[0] %></div>
                 <p><%= message[1] %></p>
+                <% likeCount = likeDAO.getLikeCount(Integer.parseInt(message[3])); %>
                 <form action="like" method="post" style="display:inline;">
                     <input type="hidden" name="messageId" value="<%= message[3] %>">
                     <input type="hidden" name="threadId" value="<%= threadId %>">
-                    <button type="submit" class="btn btn-danger"> ❤ <%= message[4] %></button>
+                    <button type="submit" class="btn btn-danger"> ❤ <%= likeCount%></button>
                 </form>
 
-                <%-- Bouton de suppression (visible uniquement pour l'auteur du message) --%>
                 <% if (isAuthor) { %>
                 <form action="deletePost" method="post" style="display:inline;">
                     <input type="hidden" name="postId" value="<%= message[3] %>">

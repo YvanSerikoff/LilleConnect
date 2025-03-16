@@ -28,24 +28,28 @@ public class PostDAO {
         }
     }
 
-    public List<Post> getPostsByThreadId(int threadId) throws SQLException {
-        try (Connection connection = ds.getConnection()) {
-            String sql = "SELECT * FROM post WHERE thread_id = ? ORDER BY id ASC";
-            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setInt(1, threadId);
-                ResultSet rs = stmt.executeQuery();
-                List<Post> posts = new ArrayList<>();
-                while (rs.next()) {
-                    posts.add(new Post(
-                            rs.getInt("id"),
-                            rs.getString("contenu"),
-                            rs.getInt("usr_id"),
-                            rs.getInt("thread_id")
-                    ));
-                }
-                return posts;
+    public List<String[]> getPostsByThreadId(int threadId) throws SQLException {
+        List<String[]> messages = new ArrayList<>();
+        try (Connection conn = ds.getConnection()) {
+            PreparedStatement stmtMessages = conn.prepareStatement(
+                    "SELECT post.id, post.contenu, usr.name, post.usr_id FROM post " +
+                            "JOIN usr ON post.usr_id = usr.id WHERE thread_id = ? ORDER BY post.id ASC"
+            );
+            stmtMessages.setInt(1, threadId);
+            ResultSet rsMessages = stmtMessages.executeQuery();
+            while (rsMessages.next()) {
+                int messageId = rsMessages.getInt("id");
+                messages.add(new String[]{
+                        rsMessages.getString("name"),
+                        rsMessages.getString("contenu"),
+                        rsMessages.getString("usr_id"),
+                        String.valueOf(messageId),
+                });
             }
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
         }
+        return messages;
     }
 
     public List<Post> findByUserId(int id) {

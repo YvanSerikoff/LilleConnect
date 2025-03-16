@@ -44,18 +44,25 @@ public class ThreadDAO {
         }
     }
 
-    public Thread getThreadById(int id) throws SQLException {
+    public boolean isAdministrator(int userId, int threadId) throws SQLException {
         try(Connection connection = ds.getConnection()) {
-            String sql = "SELECT * FROM thread WHERE id = ?";
+            String sql = "SELECT admin_id FROM thread WHERE id = ?";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setInt(1, id);
+                stmt.setInt(1, threadId);
+                ResultSet rs = stmt.executeQuery();
+                return rs.next() && rs.getInt("admin_id") == userId;
+            }
+        }
+    }
+
+    public String getThreadTitle(int threadId) throws SQLException {
+        try(Connection connection = ds.getConnection()) {
+            String sql = "SELECT title FROM thread WHERE id = ?";
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setInt(1, threadId);
                 ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
-                    return new Thread(
-                            rs.getInt("id"),
-                            rs.getString("title"),
-                            rs.getInt("admin_id")
-                    );
+                    return rs.getString("title");
                 }
                 return null;
             }
@@ -84,25 +91,6 @@ public class ThreadDAO {
         }
     }
 
-    public List<Thread> getThreadsByUserId(int userId) throws SQLException {
-        try(Connection connection = ds.getConnection()) {
-            String sql = "SELECT t.* FROM thread t JOIN subscriber s ON t.id = s.thread_id WHERE s.usr_id = ?";
-            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setInt(1, userId);
-                ResultSet rs = stmt.executeQuery();
-                List<Thread> threads = new ArrayList<>();
-                while (rs.next()) {
-                    threads.add(new Thread(
-                            rs.getInt("id"),
-                            rs.getString("title"),
-                            rs.getInt("admin_id")
-                    ));
-                }
-                return threads;
-            }
-        }
-    }
-
     public List<Thread> getSubscribedThreads(int userId) throws SQLException, IOException {
         List<Thread> threads = new ArrayList<>();
         DS ds = new DS();
@@ -121,29 +109,6 @@ public class ThreadDAO {
             }
             return threads;
         }catch (SQLException e){
-            System.err.println(e.getMessage());
-            return null;
-        }
-    }
-
-    public List<Post> getMessages(int threadId) {
-        List<Post> messages = new ArrayList<>();
-        try (Connection connection = ds.getConnection()) {
-            String sql = "SELECT * FROM post WHERE thread_id = ?";
-            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setInt(1, threadId);
-                ResultSet rs = stmt.executeQuery();
-                while (rs.next()) {
-                    messages.add(new Post(
-                            rs.getInt("id"),
-                            rs.getString("content"),
-                            rs.getInt("usr_id"),
-                            rs.getInt("thread_id")
-                    ));
-                }
-                return messages;
-            }
-        } catch (SQLException e) {
             System.err.println(e.getMessage());
             return null;
         }
