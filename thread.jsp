@@ -55,52 +55,64 @@
     <style>
         body { font-family: Arial, sans-serif; }
         .container { max-width: 800px; margin: 20px auto; }
-        .message-container { margin-bottom: 15px; }
+
+        /* Messages */
+        .message-container { margin-bottom: 15px; display: flex; }
         .message { padding: 10px; border-radius: 10px; max-width: 70%; word-wrap: break-word; }
         .message-left { background-color: #f1f1f1; align-self: flex-start; }
         .message-right { background-color: #007bff; color: white; align-self: flex-end; }
-        .username { font-weight: bold; margin-bottom: 5px; }
-        .admin-section { background: #f8f9fa; padding: 10px; margin-top: 20px; border-radius: 10px; }
+
+        /* Mobile Optimisation */
+        @media (max-width: 768px) {
+            .container { width: 95%; } /* Évite le dézoom */
+            .message { max-width: 90%; } /* Messages plus larges */
+            .btn { width: 100%; } /* Boutons plus grands */
+            textarea { font-size: 16px; } /* Texte plus lisible */
+        }
     </style>
 </head>
 <body>
 
-<header class="bg-primary text-white text-center py-3">
-    <h1>Lille Connect</h1>
-    <button class="btn btn-light" onclick="window.location.href='dashboard.jsp'">Retour au Dashboard</button>
+<header class="bg-primary text-white py-4 text-center">
+    <div class="container">
+        <h1 class="display-4 mb-0">Lille Connect</h1>
+        <button class="btn btn-light mt-2" onclick="window.location.href='dashboard.jsp'">Retour au Dashboard</button>
+    </div>
 </header>
 
 <div class="container">
-    <h2 class="mt-4"><%= threadTitle %></h2>
+    <h2 class="mt-4 text-center"><%= threadTitle %></h2>
 
     <div class="mt-4">
         <% for (String[] message : messages) {
             boolean isAuthor = Integer.parseInt(message[2]) == userId;
         %>
-        <div class="d-flex <%= isAuthor ? "justify-content-end" : "justify-content-start" %> message-container">
-            <div class="message <%= isAuthor ? "message-right" : "message-left" %>">
+        <div class="message-container <%= isAuthor ? "justify-content-end" : "justify-content-start" %>">
+            <div class="message <%= isAuthor ? "message-right" : "message-left" %> p-3 rounded">
                 <div class="username"><%= message[0] %></div>
                 <p><%= message[1] %></p>
                 <% likeCount = likeDAO.getLikeCount(Integer.parseInt(message[3])); %>
-                <form action="like" method="post" style="display:inline;">
-                    <input type="hidden" name="messageId" value="<%= message[3] %>">
-                    <input type="hidden" name="threadId" value="<%= threadId %>">
-                    <button type="submit" class="btn btn-danger"> ❤ <%= likeCount%></button>
-                </form>
+                <div class="d-flex align-items-center">
+                    <form action="like" method="post" class="me-2">
+                        <input type="hidden" name="messageId" value="<%= message[3] %>">
+                        <input type="hidden" name="threadId" value="<%= threadId %>">
+                        <button type="submit" class="btn btn-danger">❤ <%= likeCount %></button>
+                    </form>
 
-                <% if (isAuthor) { %>
-                <form action="deletePost" method="post" style="display:inline;">
-                    <input type="hidden" name="postId" value="<%= message[3] %>">
-                    <input type="hidden" name="threadId" value="<%= threadId %>">
-                    <button type="submit" class="btn btn-warning btn-sm">🗑 Supprimer</button>
-                </form>
-                <% } %>
+                    <% if (isAuthor) { %>
+                    <form action="deletePost" method="post">
+                        <input type="hidden" name="postId" value="<%= message[3] %>">
+                        <input type="hidden" name="threadId" value="<%= threadId %>">
+                        <button type="submit" class="btn btn-warning btn-sm">🗑 Supprimer</button>
+                    </form>
+                    <% } %>
+                </div>
             </div>
         </div>
         <% } %>
     </div>
 
-    <h3 class="mt-4">Publier un Message</h3>
+    <h3 class="mt-4 text-center">Publier un Message</h3>
     <form action="postMessage" method="post">
         <input type="hidden" name="threadId" value="<%= threadId %>">
         <textarea name="contenu" rows="3" class="form-control" required placeholder="Écrivez votre message ici"></textarea>
@@ -108,8 +120,8 @@
     </form>
 
     <% if (isAdmin) { %>
-    <div class="admin-section">
-        <h3 class="mt-3">Gestion des abonnés</h3>
+    <div class="admin-section mt-4">
+        <h3>Gestion des abonnés</h3>
         <h4>Liste des abonnés :</h4>
         <ul class="list-group">
             <% for (String[] sub : subscribers) { %>
@@ -138,16 +150,16 @@
         </form>
     </div>
     <% } %>
+
+    <% if (isAdmin) { %>
     <div class="mt-5">
-        <% if (isAdmin) { %>
         <form action="deleteThread" method="post">
             <input type="hidden" name="threadId" value="<%= threadId %>">
-            <button type="submit" class="btn btn-danger mt-3">🗑 Supprimer le Thread</button>
+            <button type="submit" class="btn btn-danger mt-3 w-100">🗑 Supprimer le Thread</button>
         </form>
-        <% } %>
     </div>
+    <% } %>
 </div>
-
 
 </body>
 </html>
