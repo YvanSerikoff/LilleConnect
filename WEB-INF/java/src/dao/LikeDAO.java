@@ -59,7 +59,7 @@ public class LikeDAO {
     public boolean hasLiked(int usr_id, int post_id){
         try(Connection conn = ds.getConnection()){
             PreparedStatement stmt = conn.prepareStatement(
-                    "SELECT * FROM likes WHERE usr_id = ? AND post_id = ?"
+                    "SELECT 1 FROM likes WHERE usr_id = ? AND post_id = ?"
             );
             stmt.setInt(1, usr_id);
             stmt.setInt(2, post_id);

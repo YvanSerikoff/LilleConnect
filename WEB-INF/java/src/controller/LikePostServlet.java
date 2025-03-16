@@ -17,7 +17,7 @@ public class LikePostServlet extends HttpServlet {
         User user = (User) session.getAttribute("user");
 
         if (user == null) {
-            response.sendRedirect("index.html");
+            response.sendRedirect("/LilleConnect/index.html");
             return;
         }
 

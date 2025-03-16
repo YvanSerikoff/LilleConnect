@@ -46,11 +46,12 @@ public class ThreadDAO {
 
     public boolean isAdministrator(int userId, int threadId) throws SQLException {
         try(Connection connection = ds.getConnection()) {
-            String sql = "SELECT admin_id FROM thread WHERE id = ?";
+            String sql = "SELECT admin_id FROM thread WHERE id = ? AND admin_id = ?";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setInt(1, threadId);
+                stmt.setInt(2, userId);
                 ResultSet rs = stmt.executeQuery();
-                return rs.next() && rs.getInt("admin_id") == userId;
+                return rs.next();
             }
         }
     }
@@ -70,7 +71,7 @@ public class ThreadDAO {
     }
 
     public boolean isUserSubscribed(int userId, int threadId) throws SQLException, IOException {
-        String sql = "SELECT COUNT(*) FROM subscriber WHERE usr_id = ? AND thread_id = ?";
+        String sql = "SELECT 1 FROM subscriber WHERE usr_id = ? AND thread_id = ?";
         DS ds = new DS();
 
         try (Connection conn = ds.getConnection()) {

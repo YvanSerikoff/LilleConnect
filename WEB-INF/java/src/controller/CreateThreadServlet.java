@@ -29,6 +29,11 @@ public class CreateThreadServlet extends HttpServlet {
 
         HttpSession session = request.getSession();
         User usr = (User) session.getAttribute("user");
+        if (usr == null) {
+            response.sendRedirect("/LilleConnect/index.html");
+            return;
+        }
+
         int userId = usr.getId();
 
         try {

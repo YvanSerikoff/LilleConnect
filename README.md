@@ -27,19 +27,60 @@ LilleConnect est une application web de réseau social dédiée aux étudiants. 
 
 ## 3. Requêtes SQL pertinentes (Partie 1)
 
-### Récupération des messages d'un threa**d****
+### Récupération des données d'un utilisateur suivant son nom et mot de passe
 ```sql
-SELECT post.id, post.contenu, usr.name 
-FROM post 
-JOIN usr ON post.usr_id = usr.id 
-WHERE post.thread_id = ? 
-ORDER BY post.id ASC;
+SELECT * FROM usr WHERE name = ? AND pwd = ?
+```
+
+### Récupération des utilisateurs abonnés à un thread
+```sql
+SELECT u.id, u.name 
+FROM usr u JOIN subscriber s ON u.id = s.usr_id AND s.thread_id = ?
+```
+
+### Récupération des utilisateurs non-abonnés à un thread
+```sql
+SELECT u.id, u.name 
+FROM usr u LEFT JOIN subscriber s ON u.id = s.usr_id AND s.thread_id = ? 
+WHERE s.usr_id IS NULL
+```
+
+### Récupération du nombre de likes par post
+```sql
+SELECT COUNT(*)
+FROM likes WHERE post_id = ?
+```
+
+### Récupération des posts d'un thread
+```sql
+SELECT post.id, post.contenu, usr.name, post.usr_id 
+FROM post JOIN usr ON post.usr_id = usr.id 
+WHERE thread_id = ? 
+ORDER BY post.id ASC
 ```
 
 ### Récupération des threads auxquels un utilisateur est abonné
 ```sql
-SELECT thread.id, thread.titre, thread.description
-FROM thread
-JOIN abonnement ON thread.id = abonnement.thread_id
-WHERE abonnement.usr_id = ?;
+SELECT t.id, t.title 
+FROM thread t JOIN subscriber s ON t.id = s.thread_id
+WHERE s.usr_id = ?
+```
+
+### Vérifie si un utilisateur est bien abonné à un thread
+```sql
+SELECT 1 
+FROM subscriber 
+WHERE usr_id = ? AND thread_id = ?
+```
+
+### Vérifie si un utilisateur a déjà liké un post
+```sql
+SELECT 1 
+FROM likes 
+WHERE usr_id = ? AND post_id = ?
+```
+
+### Verifie si un utilisateur est bien l'admin d'un thread
+```sql
+SELECT admin_id FROM thread WHERE id = ? AND admin_id = ?
 ```

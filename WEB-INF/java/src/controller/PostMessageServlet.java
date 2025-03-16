@@ -24,7 +24,7 @@ public class PostMessageServlet extends HttpServlet {
         Integer userId = user.getId();
 
         if (userId == null) {
-            response.sendRedirect("index.html");
+            response.sendRedirect("/LilleConnect/index.html");
             return;
         }
 

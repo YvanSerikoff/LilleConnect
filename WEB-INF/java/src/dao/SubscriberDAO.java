@@ -32,18 +32,6 @@ public class SubscriberDAO {
 
     }
 
-    public boolean isSubscribed(int userId, int threadId) throws SQLException {
-        try(Connection connection = ds.getConnection()) {
-            String sql = "SELECT 1 FROM subscriber WHERE usr_id = ? AND thread_id = ?";
-            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setInt(1, userId);
-                stmt.setInt(2, threadId);
-                ResultSet rs = stmt.executeQuery();
-                return rs.next();
-            }
-        }
-    }
-
     public void removeSubscriber(int userId, int threadId, int admin_id) throws SQLException {
         try(Connection connection = ds.getConnection()) {
             String sql = "SELECT admin_id FROM thread WHERE id = ?";
