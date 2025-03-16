@@ -1,23 +1,26 @@
 package dao;
 
 import dto.Post;
-
+import org.apache.tomcat.jakartaee.commons.lang3.StringEscapeUtils;
 import java.io.IOException;
 import java.sql.*;
 import java.util.*;
 
+
 public class PostDAO {
     private DS ds;
+
 
     public PostDAO() throws IOException {
         this.ds = new DS();
     }
 
     public void addPost(int userId, int threadId, String contenu) throws SQLException {
+        String safeInput = StringEscapeUtils.escapeHtml4(contenu);
         try (Connection connection = ds.getConnection()) {
             String sql = "INSERT INTO post (contenu, usr_id, thread_id) VALUES (?, ?, ?)";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setString(1, contenu);
+                stmt.setString(1, safeInput);
                 stmt.setInt(2, userId);
                 stmt.setInt(3, threadId);
                 stmt.executeUpdate();

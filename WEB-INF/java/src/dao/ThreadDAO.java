@@ -6,6 +6,7 @@ import java.util.*;
 
 import dto.Post;
 import dto.Thread;
+import org.apache.tomcat.jakartaee.commons.lang3.StringEscapeUtils;
 
 public class ThreadDAO {
     private final DS ds;
@@ -16,13 +17,13 @@ public class ThreadDAO {
 
     public int addThread(String title, int adminId) throws SQLException {
         int threadId = 0;
-
+        String safeInput = StringEscapeUtils.escapeHtml4(title);
         try(Connection connection = ds.getConnection()) {
             String sql = "INSERT INTO thread (title, admin_id) VALUES (?, ?)";
             String sub = "INSERT INTO subscriber (usr_id, thread_id) VALUES (?, ?)";
 
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setString(1, title);
+                stmt.setString(1, safeInput);
                 stmt.setInt(2, adminId);
                 stmt.executeUpdate();
 

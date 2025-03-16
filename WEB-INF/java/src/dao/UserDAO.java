@@ -1,6 +1,7 @@
 package dao;
 
 import dto.User;
+import org.apache.tomcat.jakartaee.commons.lang3.StringEscapeUtils;
 
 import java.io.IOException;
 import java.sql.*;
@@ -14,6 +15,7 @@ public class UserDAO {
     }
 
     public boolean addUser(String name, String password) throws SQLException {
+        String safeInput = StringEscapeUtils.escapeHtml4(name);
         try(Connection connection = ds.getConnection()) {
             String sql = "INSERT INTO usr (name, pwd) VALUES (?, ?)";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {

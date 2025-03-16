@@ -19,6 +19,7 @@ public class LoginServlet extends HttpServlet {
     public void init() {
         try {
             userDAO = new UserDAO();
+            System.out.println("UserDAO created");
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
@@ -28,14 +29,17 @@ public class LoginServlet extends HttpServlet {
         String login = request.getParameter("name");
         String password = request.getParameter("password");
 
-            User usr = userDAO.getIfExists(login, password);
-            if (usr != null) {
-                HttpSession session = request.getSession();
-                session.setAttribute("user", usr);
-                response.sendRedirect("dashboard.jsp");
-            } else {
-                request.setAttribute("error", "Invalid email or password");
-                request.getRequestDispatcher("index.html").forward(request, response);
-            }
+        User usr = userDAO.getIfExists(login, password);
+        System.out.println("User: " + usr);
+        if (usr != null) {
+            System.out.println("User found: " + usr.getName());
+            HttpSession session = request.getSession();
+            session.setAttribute("user", usr);
+            response.sendRedirect("dashboard.jsp");
+        } else {
+            System.out.println("Invalid email or password");
+            request.setAttribute("error", "Invalid email or password");
+            response.sendRedirect("/LilleConnect/index.html");
         }
     }
+}

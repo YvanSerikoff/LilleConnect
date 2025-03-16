@@ -4,6 +4,7 @@
 <%@ page import="jakarta.servlet.http.HttpSession" %>
 <%@ page import="dto.User" %>
 <%@ page import="dao.LikeDAO" %>
+<%@ page import="org.apache.tomcat.jakartaee.commons.lang3.StringEscapeUtils"%>
 
 <%
     String threadIdStr = request.getParameter("threadId");
@@ -155,7 +156,7 @@
         <ul class="list-group">
             <% for (String[] sub : subscribers) { %>
             <li class="list-group-item d-flex justify-content-between align-items-center">
-                <%= sub[1] %>
+                <%= StringEscapeUtils.escapeHtml4(sub[1]) %>
                 <% if (Integer.parseInt(sub[0]) != userId) { %>
                 <form action="unsubscribe" method="post">
                     <input type="hidden" name="threadId" value="<%= threadId %>">
