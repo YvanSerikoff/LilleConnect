@@ -44,7 +44,7 @@
     <div class="container">
         <h1 class="display-4 mb-0">Lille Connect</h1>
         <div class="d-flex justify-content-center align-items-center mt-2">
-            <span class="me-3">👤 <%= user.getName() %></span>
+            <span class="me-3">Bonjour <%= user.getName() %></span>
             <form action="logout" method="post">
                 <button type="submit" class="logout-btn btn btn-sm">Déconnexion</button>
             </form>
