@@ -10,6 +10,11 @@ LilleConnect est une application web de réseau social dédiée aux étudiants. 
 - Gestion des abonnements aux threads
 - Authentification et sécurisation des données
 
+Vous pouvez avoir accès aux posts d'un utilisateur au format JSON avec la commande suivant :
+```
+curl -i -X GET http://localhost:8080/LilleConnect/posts/<id>
+```
+
 ---
 
 ##  2. Conception
@@ -111,20 +116,20 @@ SELECT admin_id FROM thread WHERE id = ? AND admin_id = ?
 La class FrontController est le controller de l'application. Il gère les requêtes HTTP et redirige vers les pages JSP correspondantes.
 Il prend en entrée les paramètres suivants :
 
-| Action                | Description                          | Servlet/Page                |
-|-----------------------|--------------------------------------|-----------------------------|
-| **like**              | liker un post                        | LikePostServlet             |
-| **postMessage**       | poster un message                    | PostMessageServlet          |
-| **deletePost**        | supprimer un post                    | DeletePostServlet           |
-| **createThread**      | créer un thread                      | CreateThreadServlet         |
-| **deleteThread**      | supprimer un thread                  | DeleteThreadServlet         |
-| **login**             | se connecter                         | LoginServlet                |
-| **logout**            | se déconnecter                       | LogoutServlet               |
-| **createUser**        | créer un utilisateur                 | CreateUserServlet           |
-| **unsubscribe**       | désabonner un utilisateur d'un thread| UnsubscribeServlet          |
-| **invite**            | inviter un utilisateur à un thread   | InviteUserServlet           |
-| **dashboard**         | afficher le dashboard                | dashboard.jsp               |
-| **thread**            | afficher un thread                   | thread.jsp                  |
+| Action           | Description                           | Servlet/Page        |
+|------------------|---------------------------------------|---------------------|
+| **like**         | liker un post                         | LikePostServlet     |
+| **postMessage**  | poster un message                     | PostMessageServlet  |
+| **deletePost**   | supprimer un post                     | DeletePostServlet   |
+| **createThread** | créer un thread                       | CreateThreadServlet |
+| **deleteThread** | supprimer un thread                   | DeleteThreadServlet |
+| **login**        | se connecter                          | LoginServlet        |
+| **logout**       | se déconnecter                        | LogoutServlet       |
+| **createUser**   | créer un utilisateur                  | CreateUserServlet   |
+| **unsubscribe**  | désabonner un utilisateur d'un thread | UnsubscribeServlet  |
+| **invite**       | inviter un utilisateur à un thread    | InviteUserServlet   |
+| **dashboard**    | afficher le dashboard                 | dashboard.jsp       |
+| **thread**       | afficher un thread                    | thread.jsp          |
 
 ## 6. Difficultés rencontrées
 
